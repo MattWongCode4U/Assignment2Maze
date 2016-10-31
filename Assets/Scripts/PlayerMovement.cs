@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using CnControls;
 using System.Collections;
 
 public class PlayerMovement : MonoBehaviour {
@@ -17,13 +18,20 @@ public class PlayerMovement : MonoBehaviour {
 	private float rotationX = 0F;
 	private float rotationY = 0F;
 	private Quaternion originalRotation;
+	private bool computer;
 
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody> ();
 		Cursor.lockState = CursorLockMode.Locked;
-
-		// Make the rigid body not change rotation
+		if (Application.platform == RuntimePlatform.OSXPlayer
+			|| Application.platform == RuntimePlatform.WindowsPlayer
+			|| Application.platform == RuntimePlatform.OSXEditor
+			|| Application.platform == RuntimePlatform.WindowsEditor) {
+				computer = true;
+		} else {
+			computer = false;
+		}
 		if (rb)
 			rb.freezeRotation = true;
 		originalRotation = transform.localRotation;
@@ -39,14 +47,20 @@ public class PlayerMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		float h = Input.GetAxis ("Horizontal");
-		float v = Input.GetAxis ("Vertical");
+		float h = CnInputManager.GetAxisRaw ("Horizontal");
+		float v = CnInputManager.GetAxisRaw ("Vertical");
 		if (rb.isKinematic)
 			move (h, v, 0.3f);
 		else
 			move (h, v, 1f);
-		float mx = Input.GetAxis ("Mouse X");
-		float my = Input.GetAxis ("Mouse Y");
+		float mx = 0, my = 0;
+		if (computer) {
+			mx = CnInputManager.GetAxisRaw ("Mouse X");
+			my = CnInputManager.GetAxisRaw ("Mouse Y");
+		} else {
+			mx =  CnInputManager.GetAxisRaw ("HorizontalJoystick");
+			my =  CnInputManager.GetAxisRaw ("VerticalJoystick");
+		}
 		cameraRotate (mx, my);
 	}
 
