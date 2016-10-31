@@ -28,7 +28,9 @@ public class PlayerMovement : MonoBehaviour {
 			|| Application.platform == RuntimePlatform.WindowsPlayer
 			|| Application.platform == RuntimePlatform.OSXEditor
 			|| Application.platform == RuntimePlatform.WindowsEditor) {
-				computer = true;
+			computer = true;
+			GameObject.Find("Movestick").active = false;
+			GameObject.Find("Viewstick").active = false;
 		} else {
 			computer = false;
 		}
