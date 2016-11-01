@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        BeginGame();
+        StartCoroutine(BeginGame());
         SetLighting(PlayerPrefs.GetInt("lighting"));
 	}
 	
@@ -27,11 +27,10 @@ public class GameManager : MonoBehaviour {
         }
 	}
 
-    void BeginGame() {
+    IEnumerator BeginGame() {
         mazeInstance = Instantiate(mazePrefab) as Maze;
         mazeInstance.transform.parent = this.transform;
-        //StartCoroutine(mazeInstance.Generate());
-        mazeInstance.GenerateNoStep();
+        yield return StartCoroutine(mazeInstance.Generate());
         SpawnPlayer();
     }
 
@@ -57,6 +56,7 @@ public class GameManager : MonoBehaviour {
 
     void SpawnPlayer() {
         playerInstance = Instantiate(playerPrefab) as PlayerMovement;
+        playerInstance.transform.parent = this.transform;
         RespawnCharacter();
     }
 
