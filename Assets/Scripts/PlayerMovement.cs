@@ -59,14 +59,14 @@ public class PlayerMovement : MonoBehaviour {
 		float h = CnInputManager.GetAxisRaw ("Horizontal");
 		float v = CnInputManager.GetAxisRaw ("Vertical");
         if (rb.isKinematic)
-			move (h, v, 0.3f);
+			move (h, v, 0.05f);
 		else
 			move (h, v, 1f);
 		pickCameraAxes();
 	}
 
 	void LateUpdate() {
-		if (Input.GetKey (KeyCode.BackQuote) || Input.GetKey(KeyCode.Joystick1Button3)) {
+		if (Input.GetKeyDown (KeyCode.BackQuote) || Input.GetKey(KeyCode.Joystick1Button3)) {
 			rb.isKinematic = !rb.isKinematic; // Toggle
 		}
 	}

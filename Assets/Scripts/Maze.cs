@@ -35,6 +35,15 @@ public class Maze : MonoBehaviour {
 		}
 	}
 
+	public void GenerateNoStep() {
+		cells = new MazeCell[size.x, size.z];
+		List<MazeCell> activeCells = new List<MazeCell>();
+		DoFirstGenerationStep(activeCells);
+		while (activeCells.Count > 0) {
+			DoNextGenerationStep(activeCells);
+		}
+	}
+
 	private MazeCell CreateCell (IntVector2 coordinates) {
 		MazeCell newCell = Instantiate(cellPrefab) as MazeCell;
 		cells[coordinates.x, coordinates.z] = newCell;

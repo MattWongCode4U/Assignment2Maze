@@ -5,6 +5,9 @@ public class GameManager : MonoBehaviour {
     // Maze
     public Maze mazePrefab;
     private Maze mazeInstance;
+    // Player
+    public PlayerMovement playerPrefab;
+    private PlayerMovement playerInstance;
 
     private float night = 0.5f;
     private float day = 1.0f;
@@ -27,7 +30,9 @@ public class GameManager : MonoBehaviour {
     void BeginGame() {
         mazeInstance = Instantiate(mazePrefab) as Maze;
         mazeInstance.transform.parent = this.transform;
-        StartCoroutine(mazeInstance.Generate());
+        //StartCoroutine(mazeInstance.Generate());
+        mazeInstance.GenerateNoStep();
+        SpawnPlayer();
     }
 
     void SetLighting(int lighting) {
@@ -48,5 +53,15 @@ public class GameManager : MonoBehaviour {
         StopAllCoroutines();
         Destroy(mazeInstance.gameObject);
 		BeginGame();
+    }
+
+    void SpawnPlayer() {
+        playerInstance = Instantiate(playerPrefab) as PlayerMovement;
+        RespawnCharacter();
+    }
+
+    void RespawnCharacter() {
+        Vector3 spawn = mazeInstance.GetCell(new IntVector2(0, 0)).transform.position;
+        playerInstance.transform.position = new Vector3(spawn.x, playerInstance.transform.position.y, spawn.z);
     }
 }
