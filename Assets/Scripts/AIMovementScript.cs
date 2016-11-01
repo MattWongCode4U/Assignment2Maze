@@ -8,7 +8,7 @@ public class AIMovementScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        playerobj = GameObject.Find("Player");
+        playerobj = GameObject.FindGameObjectWithTag("Player");
 	}
 	
 	// Update is called once per frame

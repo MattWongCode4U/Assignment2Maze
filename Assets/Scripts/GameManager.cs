@@ -8,7 +8,10 @@ public class GameManager : MonoBehaviour {
     // Player
     public PlayerMovement playerPrefab;
     private PlayerMovement playerInstance;
-
+    // AI
+    public AIMovementScript aiPrefab;
+    private AIMovementScript aiInstance;
+    public Material daySkybox, nightSkybox;
     private float night = 0.5f;
     private float day = 1.0f;
     private Renderer[] _renderers;
@@ -22,8 +25,10 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (    Input.GetKeyDown(KeyCode.Home) 
-            ||  Input.GetKeyDown(KeyCode.JoystickButton7)) {
-            RestartGame();
+            ||  Input.GetKeyDown(KeyCode.JoystickButton7)
+            ||  Input.touchCount > 2) {
+            RespawnPlayer();
+            RespawnAI();
         }
 	}
 
@@ -31,7 +36,10 @@ public class GameManager : MonoBehaviour {
         mazeInstance = Instantiate(mazePrefab) as Maze;
         mazeInstance.transform.parent = this.transform;
         yield return StartCoroutine(mazeInstance.Generate());
+        GameObject.Find("LoadingCamera").SetActive(false);
+        GameObject.Find("LoadingImage").SetActive(false);
         SpawnPlayer();
+        SpawnAI();
     }
 
     void SetLighting(int lighting) {
@@ -48,6 +56,17 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    void SetSkybox(int lighting) {
+        GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
+        if(lighting == 0) {
+            // day
+            cam.GetComponent<Skybox>().material = daySkybox;
+        } else if(lighting == 1) {
+            // night
+            cam.GetComponent<Skybox>().material = nightSkybox;
+        }
+    }
+
     void RestartGame() {
         StopAllCoroutines();
         Destroy(mazeInstance.gameObject);
@@ -57,11 +76,23 @@ public class GameManager : MonoBehaviour {
     void SpawnPlayer() {
         playerInstance = Instantiate(playerPrefab) as PlayerMovement;
         playerInstance.transform.parent = this.transform;
-        RespawnCharacter();
+        RespawnPlayer();
+        SetSkybox(PlayerPrefs.GetInt("lighting"));
     }
 
-    void RespawnCharacter() {
+    void RespawnPlayer() {
         Vector3 spawn = mazeInstance.GetCell(new IntVector2(0, 0)).transform.position;
         playerInstance.transform.position = new Vector3(spawn.x, playerInstance.transform.position.y, spawn.z);
+    }
+
+    void SpawnAI() {
+        aiInstance = Instantiate(aiPrefab) as AIMovementScript;
+        aiInstance.transform.parent = this.transform;
+        RespawnAI();
+    }
+
+    void RespawnAI() {
+        Vector3 spawn = mazeInstance.GetCell(new IntVector2(mazeInstance.size.x - 1, mazeInstance.size.z - 1)).transform.position;
+        aiInstance.transform.position = new Vector3(spawn.x, aiInstance.transform.position.y, spawn.z);
     }
 }

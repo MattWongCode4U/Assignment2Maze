@@ -86,11 +86,11 @@ public class PlayerMovement : MonoBehaviour {
 		}
 	}
 
-	void cameraRotate(float mx, float my) {
+	void cameraRotate(float mx, float my, float mod) {
 		if (axes == RotationAxes.MouseXAndY)
 		{
-			rotationX += mx * sensitivityX;
-			rotationY += my * sensitivityY;
+			rotationX += mx * sensitivityX * mod;
+			rotationY += my * sensitivityY * mod;
 			rotationX = ClampAngle (rotationX, minimumX, maximumX);
 			rotationY = ClampAngle (rotationY, minimumY, maximumY);
 			Quaternion xQuaternion = Quaternion.AngleAxis (rotationX, Vector3.up);
@@ -99,14 +99,14 @@ public class PlayerMovement : MonoBehaviour {
 		}
 		else if (axes == RotationAxes.MouseX)
 		{
-			rotationX += mx * sensitivityX;
+			rotationX += mx * sensitivityX * mod;
 			rotationX = ClampAngle (rotationX, minimumX, maximumX);
 			Quaternion xQuaternion = Quaternion.AngleAxis (rotationX, Vector3.up);
 			transform.localRotation = originalRotation * xQuaternion;
 		}
 		else
 		{
-			rotationY += my * sensitivityY;
+			rotationY += my * sensitivityY * mod;
 			rotationY = ClampAngle (rotationY, minimumY, maximumY);
 			Quaternion yQuaternion = Quaternion.AngleAxis (-rotationY, Vector3.right);
 			transform.localRotation = originalRotation * yQuaternion;
@@ -114,23 +114,27 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	void pickCameraAxes() {
-		float mx = 0, my = 0;
+		float mx = 0, my = 0, mod = 0;
 		if ((pc && !joystick )|| (mac && !joystick)) {
             mx = CnInputManager.GetAxisRaw("Mouse X");
             my = CnInputManager.GetAxisRaw("Mouse Y");
+			mod = 1f;
         }
         else if (pc && joystick) {
             mx = CnInputManager.GetAxisRaw("HJoystickXboxPC");
             my = CnInputManager.GetAxisRaw("VJoystickXboxPC");
+			mod = 1f;
         }
         else if (mac && joystick) {
             mx = CnInputManager.GetAxisRaw("HJoystickXboxMac");
             my = CnInputManager.GetAxisRaw("VJoystickXboxMac");
+			mod = 1f;
         }
         else {
             mx = CnInputManager.GetAxisRaw("HorizontalJoystick");
             my = CnInputManager.GetAxisRaw("VerticalJoystick");
+			mod = 0.75f;
         }
-		cameraRotate (mx, my);
+		cameraRotate (mx, my, mod);
 	}
 }
