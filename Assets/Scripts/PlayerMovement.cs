@@ -59,14 +59,22 @@ public class PlayerMovement : MonoBehaviour {
 		float h = CnInputManager.GetAxisRaw ("Horizontal");
 		float v = CnInputManager.GetAxisRaw ("Vertical");
         if (rb.isKinematic)
+<<<<<<< HEAD
 			move (h, v, 0.3f);
+=======
+			move (h, v, 0.05f);
+>>>>>>> ui
 		else
 			move (h, v, 1f);
 		pickCameraAxes();
 	}
 
 	void LateUpdate() {
+<<<<<<< HEAD
 		if (Input.GetKey (KeyCode.BackQuote) || Input.GetKey(KeyCode.Joystick1Button3)) {
+=======
+		if (Input.GetKeyDown (KeyCode.BackQuote) || Input.GetKey(KeyCode.Joystick1Button3)) {
+>>>>>>> ui
 			rb.isKinematic = !rb.isKinematic; // Toggle
 		}
 	}
@@ -86,11 +94,19 @@ public class PlayerMovement : MonoBehaviour {
 		}
 	}
 
+<<<<<<< HEAD
 	void cameraRotate(float mx, float my) {
 		if (axes == RotationAxes.MouseXAndY)
 		{
 			rotationX += mx * sensitivityX;
 			rotationY += my * sensitivityY;
+=======
+	void cameraRotate(float mx, float my, float mod) {
+		if (axes == RotationAxes.MouseXAndY)
+		{
+			rotationX += mx * sensitivityX * mod;
+			rotationY += my * sensitivityY * mod;
+>>>>>>> ui
 			rotationX = ClampAngle (rotationX, minimumX, maximumX);
 			rotationY = ClampAngle (rotationY, minimumY, maximumY);
 			Quaternion xQuaternion = Quaternion.AngleAxis (rotationX, Vector3.up);
@@ -99,14 +115,22 @@ public class PlayerMovement : MonoBehaviour {
 		}
 		else if (axes == RotationAxes.MouseX)
 		{
+<<<<<<< HEAD
 			rotationX += mx * sensitivityX;
+=======
+			rotationX += mx * sensitivityX * mod;
+>>>>>>> ui
 			rotationX = ClampAngle (rotationX, minimumX, maximumX);
 			Quaternion xQuaternion = Quaternion.AngleAxis (rotationX, Vector3.up);
 			transform.localRotation = originalRotation * xQuaternion;
 		}
 		else
 		{
+<<<<<<< HEAD
 			rotationY += my * sensitivityY;
+=======
+			rotationY += my * sensitivityY * mod;
+>>>>>>> ui
 			rotationY = ClampAngle (rotationY, minimumY, maximumY);
 			Quaternion yQuaternion = Quaternion.AngleAxis (-rotationY, Vector3.right);
 			transform.localRotation = originalRotation * yQuaternion;
@@ -114,23 +138,45 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	void pickCameraAxes() {
+<<<<<<< HEAD
 		float mx = 0, my = 0;
 		if ((pc && !joystick )|| (mac && !joystick)) {
             mx = CnInputManager.GetAxisRaw("Mouse X");
             my = CnInputManager.GetAxisRaw("Mouse Y");
+=======
+		float mx = 0, my = 0, mod = 0;
+		if ((pc && !joystick )|| (mac && !joystick)) {
+            mx = CnInputManager.GetAxisRaw("Mouse X");
+            my = CnInputManager.GetAxisRaw("Mouse Y");
+			mod = 1f;
+>>>>>>> ui
         }
         else if (pc && joystick) {
             mx = CnInputManager.GetAxisRaw("HJoystickXboxPC");
             my = CnInputManager.GetAxisRaw("VJoystickXboxPC");
+<<<<<<< HEAD
+=======
+			mod = 1f;
+>>>>>>> ui
         }
         else if (mac && joystick) {
             mx = CnInputManager.GetAxisRaw("HJoystickXboxMac");
             my = CnInputManager.GetAxisRaw("VJoystickXboxMac");
+<<<<<<< HEAD
+=======
+			mod = 1f;
+>>>>>>> ui
         }
         else {
             mx = CnInputManager.GetAxisRaw("HorizontalJoystick");
             my = CnInputManager.GetAxisRaw("VerticalJoystick");
+<<<<<<< HEAD
         }
 		cameraRotate (mx, my);
+=======
+			mod = 0.75f;
+        }
+		cameraRotate (mx, my, mod);
+>>>>>>> ui
 	}
 }
