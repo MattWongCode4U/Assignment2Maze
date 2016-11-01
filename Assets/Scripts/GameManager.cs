@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour {
     public AIMovementScript aiPrefab;
     private AIMovementScript aiInstance;
     public Material daySkybox, nightSkybox;
-    private float night = 0.5f;
+    private float night = 0.25f;
     private float day = 1.0f;
     private Renderer[] _renderers;
 
