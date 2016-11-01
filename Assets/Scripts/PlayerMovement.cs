@@ -18,26 +18,33 @@ public class PlayerMovement : MonoBehaviour {
 	private float rotationX = 0F;
 	private float rotationY = 0F;
 	private Quaternion originalRotation;
-	private bool computer;
+	private bool pc, mac, joystick;
 
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody> ();
 		Cursor.lockState = CursorLockMode.Locked;
-		if (Application.platform == RuntimePlatform.OSXPlayer
-			|| Application.platform == RuntimePlatform.WindowsPlayer
-			|| Application.platform == RuntimePlatform.OSXEditor
-			|| Application.platform == RuntimePlatform.WindowsEditor) {
-			computer = true;
-			GameObject.Find("Movestick").active = false;
-			GameObject.Find("Viewstick").active = false;
-		} else {
-			computer = false;
-		}
-		if (rb)
-			rb.freezeRotation = true;
+        string[] joysticks = Input.GetJoystickNames();
+		if (    Application.platform == RuntimePlatform.WindowsPlayer
+			||  Application.platform == RuntimePlatform.WindowsEditor) {
+			pc = true;
+            GameObject.Find("Movestick").SetActive(false);
+            GameObject.Find("Viewstick").SetActive(false);
+        } else if(
+                Application.platform == RuntimePlatform.OSXPlayer 
+            ||  Application.platform == RuntimePlatform.OSXEditor) {
+            mac = true;
+            GameObject.Find("Movestick").SetActive(false);
+            GameObject.Find("Viewstick").SetActive(false);
+        } else {
+            pc = mac = false;
+            joystick = false;
+        }
+        if (joysticks.Length != 0) joystick = true;
+		if (rb) rb.freezeRotation = true;
 		originalRotation = transform.localRotation;
 	}
+
 	public static float ClampAngle (float angle, float min, float max)
 	{
 		if (angle < -360F)
@@ -51,18 +58,27 @@ public class PlayerMovement : MonoBehaviour {
 	void Update () {
 		float h = CnInputManager.GetAxisRaw ("Horizontal");
 		float v = CnInputManager.GetAxisRaw ("Vertical");
-		if (rb.isKinematic)
+        float mx = 0, my = 0;
+        if (rb.isKinematic)
 			move (h, v, 0.3f);
 		else
 			move (h, v, 1f);
-		float mx = 0, my = 0;
-		if (computer) {
-			mx = CnInputManager.GetAxisRaw ("Mouse X");
-			my = CnInputManager.GetAxisRaw ("Mouse Y");
-		} else {
-			mx =  CnInputManager.GetAxisRaw ("HorizontalJoystick");
-			my =  CnInputManager.GetAxisRaw ("VerticalJoystick");
-		}
+        if ((pc && !joystick )|| (mac && !joystick)) {
+            mx = CnInputManager.GetAxisRaw("Mouse X");
+            my = CnInputManager.GetAxisRaw("Mouse Y");
+        }
+        else if (pc && joystick) {
+            mx = CnInputManager.GetAxisRaw("HJoystickXboxPC");
+            my = CnInputManager.GetAxisRaw("VJoystickXboxPC");
+        }
+        else if (mac && joystick) {
+            mx = CnInputManager.GetAxisRaw("HJoystickXboxMac");
+            my = CnInputManager.GetAxisRaw("VJoystickXboxMac");
+        }
+        else {
+            mx = CnInputManager.GetAxisRaw("HorizontalJoystick");
+            my = CnInputManager.GetAxisRaw("VerticalJoystick");
+        }
 		cameraRotate (mx, my);
 	}
 
