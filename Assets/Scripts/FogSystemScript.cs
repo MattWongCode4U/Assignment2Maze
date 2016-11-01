@@ -14,7 +14,7 @@ public class FogSystemScript : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.F))
+		if (Input.GetKeyUp(KeyCode.F) || Input.GetKeyDown(KeyCode.JoystickButton1))
         {
             fogOn = !fogOn;
 
