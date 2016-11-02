@@ -30,12 +30,16 @@ public class PlayerMovement : MonoBehaviour {
 			pc = true;
             GameObject.Find("Movestick").SetActive(false);
             GameObject.Find("Viewstick").SetActive(false);
+			GameObject.Find("FogButton").SetActive(false);
+			GameObject.Find("NoclipButton").SetActive(false);
         } else if(
                 Application.platform == RuntimePlatform.OSXPlayer 
             ||  Application.platform == RuntimePlatform.OSXEditor) {
             mac = true;
             GameObject.Find("Movestick").SetActive(false);
             GameObject.Find("Viewstick").SetActive(false);
+			GameObject.Find("FogButton").SetActive(false);
+			GameObject.Find("NoclipButton").SetActive(false);
         } else {
             pc = mac = false;
             joystick = false;
@@ -66,8 +70,9 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	void LateUpdate() {
-		if (Input.GetKeyDown (KeyCode.BackQuote) || Input.GetKey(KeyCode.Joystick1Button3)) {
-			rb.isKinematic = !rb.isKinematic; // Toggle
+		if (Input.GetKeyDown (KeyCode.BackQuote) 
+		|| 	Input.GetKey(KeyCode.Joystick1Button3)) {
+			ToggleNoclip();
 		}
 	}
 
@@ -114,21 +119,18 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	void pickCameraAxes() {
-		float mx = 0, my = 0, mod = 0;
+		float mx = 0, my = 0, mod = 1f;
 		if ((pc && !joystick )|| (mac && !joystick)) {
             mx = CnInputManager.GetAxisRaw("Mouse X");
             my = CnInputManager.GetAxisRaw("Mouse Y");
-			mod = 1f;
         }
         else if (pc && joystick) {
             mx = CnInputManager.GetAxisRaw("HJoystickXboxPC");
             my = CnInputManager.GetAxisRaw("VJoystickXboxPC");
-			mod = 1f;
         }
         else if (mac && joystick) {
             mx = CnInputManager.GetAxisRaw("HJoystickXboxMac");
             my = CnInputManager.GetAxisRaw("VJoystickXboxMac");
-			mod = 1f;
         }
         else {
             mx = CnInputManager.GetAxisRaw("HorizontalJoystick");
@@ -136,5 +138,14 @@ public class PlayerMovement : MonoBehaviour {
 			mod = 0.75f;
         }
 		cameraRotate (mx, my, mod);
+	}
+
+	public void ToggleNoclip() {
+		rb.isKinematic = !rb.isKinematic; // Toggle
+	}
+
+	public void ResetView() {
+		rotationX = 0;
+		rotationY = 0;
 	}
 }
