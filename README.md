@@ -32,6 +32,6 @@ Welcome to our maze generator game! In this game try to run through the maze as 
 ## Mobile
 - left joystick - movement (forward, back, left, right)
 - right joystick - look around with the camera
-- double tap - respawn
+- three finger tap - respawn
 - fog button - toggle fog
 - noclip butotn - toggle noclip

@@ -15,9 +15,7 @@ public class GameManager : MonoBehaviour {
     private float night = 0.5f;
     private float day = 1.0f;
     private Renderer[] _renderers;
-    // Tap
-    private float doubleTapDelta;
-    private bool doubleTap = false;
+
 	// Use this for initialization
 	void Start () {
         StartCoroutine(BeginGame());
@@ -27,18 +25,10 @@ public class GameManager : MonoBehaviour {
 	void Update () {
         if (    Input.GetKeyDown(KeyCode.Home) 
             ||  Input.GetKeyDown(KeyCode.JoystickButton7)
+            ||  Input.touchCount > 2
             ||  Input.GetKey(KeyCode.R)) {
             RespawnPlayer();
             RespawnAI();
-        } else if (Input.touches[0].phase == TouchPhase.Ended) {
-            if (Time.time < doubleTapDelta + .3f) {
-                doubleTap = true;
-            }
-            doubleTapDelta = Time.time;
-            if (doubleTap) {
-                RespawnPlayer();
-                RespawnAI();
-            }
         }
 	}
 
