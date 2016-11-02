@@ -6,7 +6,7 @@ public class Maze : MonoBehaviour {
 	public IntVector2 size;
 	public MazeCell cellPrefab;
 	public MazePassage passagePrefab;
-	public MazeWall wallPrefab;
+	public MazeWall[] wallPrefab;
 	public float generationStepDelay;
 	private MazeCell[,] cells;
 
@@ -104,10 +104,38 @@ public class Maze : MonoBehaviour {
 	}
 
 	private void CreateWall (MazeCell cell, MazeCell otherCell, MazeDirection direction) {
-		MazeWall wall = Instantiate(wallPrefab) as MazeWall;
+		//MazeWall wall = Instantiate(wallPrefab) as MazeWall;
+		MazeWall wall = Instantiate(wallPrefab[0]) as MazeWall;
+		switch(direction){
+			case MazeDirection.North:
+				wall = Instantiate(wallPrefab[0]) as MazeWall;
+				break;
+			case MazeDirection.South:
+				wall = Instantiate(wallPrefab[1]) as MazeWall;
+				break;
+			case MazeDirection.East:
+				wall = Instantiate(wallPrefab[2]) as MazeWall;
+				break;
+			case MazeDirection.West:
+				wall = Instantiate(wallPrefab[3]) as MazeWall;
+				break;
+		}
 		wall.Initialize(cell, otherCell, direction);
 		if (otherCell != null) {
-			wall = Instantiate(wallPrefab) as MazeWall;
+			switch(direction){
+				case MazeDirection.North:
+					wall = Instantiate(wallPrefab[0]) as MazeWall;
+					break;
+				case MazeDirection.South:
+					wall = Instantiate(wallPrefab[1]) as MazeWall;
+					break;
+				case MazeDirection.East:
+					wall = Instantiate(wallPrefab[2]) as MazeWall;
+					break;
+				case MazeDirection.West:
+					wall = Instantiate(wallPrefab[3]) as MazeWall;
+					break;
+			}
 			wall.Initialize(otherCell, cell, direction.GetOpposite());
 		}
 	}
