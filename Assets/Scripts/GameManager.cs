@@ -15,7 +15,9 @@ public class GameManager : MonoBehaviour {
     private float night = 0.5f;
     private float day = 1.0f;
     private Renderer[] _renderers;
-
+    // Tap
+    private float doubleTapDelta;
+    private bool doubleTap = false;
 	// Use this for initialization
 	void Start () {
         StartCoroutine(BeginGame());
@@ -25,9 +27,18 @@ public class GameManager : MonoBehaviour {
 	void Update () {
         if (    Input.GetKeyDown(KeyCode.Home) 
             ||  Input.GetKeyDown(KeyCode.JoystickButton7)
-            ||  Input.touchCount > 2) {
+            ||  Input.GetKey(KeyCode.R)) {
             RespawnPlayer();
             RespawnAI();
+        } else if (Input.touches[0].phase == TouchPhase.Ended) {
+            if (Time.time < doubleTapDelta + .3f) {
+                doubleTap = true;
+            }
+            doubleTapDelta = Time.time;
+            if (doubleTap) {
+                RespawnPlayer();
+                RespawnAI();
+            }
         }
 	}
 
@@ -50,13 +61,10 @@ public class GameManager : MonoBehaviour {
         } else if(lighting == 1) {
             chosenTime = night;
         }
-        Debug.Log("hello");
-        Debug.Log(GameObject.FindGameObjectsWithTag("Wall"));
         GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
         foreach(GameObject wall in walls)
         {
             _renderers = wall.GetComponentsInChildren<Renderer>();
-            Debug.Log(wall.GetComponentInChildren<Renderer>());
             foreach (Renderer renderer in _renderers)
             {
                 renderer.material.SetFloat("_AmbientLighIntensity", chosenTime);
@@ -91,7 +99,7 @@ public class GameManager : MonoBehaviour {
     void RespawnPlayer() {
         Vector3 spawn = mazeInstance.GetCell(new IntVector2(0, 0)).transform.position;
         playerInstance.transform.position = new Vector3(spawn.x, playerInstance.transform.position.y, spawn.z);
-        playerInstance.transform.rotation = Quaternion.identity;
+        playerInstance.ResetView();
     }
 
     void SpawnAI() {

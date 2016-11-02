@@ -119,21 +119,18 @@ public class PlayerMovement : MonoBehaviour {
 	}
 
 	void pickCameraAxes() {
-		float mx = 0, my = 0, mod = 0;
+		float mx = 0, my = 0, mod = 1f;
 		if ((pc && !joystick )|| (mac && !joystick)) {
             mx = CnInputManager.GetAxisRaw("Mouse X");
             my = CnInputManager.GetAxisRaw("Mouse Y");
-			mod = 1f;
         }
         else if (pc && joystick) {
             mx = CnInputManager.GetAxisRaw("HJoystickXboxPC");
             my = CnInputManager.GetAxisRaw("VJoystickXboxPC");
-			mod = 1f;
         }
         else if (mac && joystick) {
             mx = CnInputManager.GetAxisRaw("HJoystickXboxMac");
             my = CnInputManager.GetAxisRaw("VJoystickXboxMac");
-			mod = 1f;
         }
         else {
             mx = CnInputManager.GetAxisRaw("HorizontalJoystick");
@@ -145,5 +142,10 @@ public class PlayerMovement : MonoBehaviour {
 
 	public void ToggleNoclip() {
 		rb.isKinematic = !rb.isKinematic; // Toggle
+	}
+
+	public void ResetView() {
+		rotationX = 0;
+		rotationY = 0;
 	}
 }

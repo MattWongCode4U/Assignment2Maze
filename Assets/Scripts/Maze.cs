@@ -49,7 +49,7 @@ public class Maze : MonoBehaviour {
 		cells[coordinates.x, coordinates.z] = newCell;
 		newCell.coordinates = coordinates;
 		newCell.name = "Maze Cell " + coordinates.x + ", " + coordinates.z;
-		newCell.transform.parent = transform;
+		newCell.transform.parent = this.transform;
 		newCell.transform.localPosition =
 			new Vector3(coordinates.x - size.x * 0.5f + 0.5f, 0f, coordinates.z - size.z * 0.5f + 0.5f);
 		return newCell;
@@ -105,7 +105,7 @@ public class Maze : MonoBehaviour {
 
 	private void CreateWall (MazeCell cell, MazeCell otherCell, MazeDirection direction) {
 		//MazeWall wall = Instantiate(wallPrefab) as MazeWall;
-		MazeWall wall = Instantiate(wallPrefab[0]) as MazeWall;
+		MazeWall wall;
 		switch(direction){
 			case MazeDirection.North:
 				wall = Instantiate(wallPrefab[0]) as MazeWall;
@@ -119,21 +119,27 @@ public class Maze : MonoBehaviour {
 			case MazeDirection.West:
 				wall = Instantiate(wallPrefab[3]) as MazeWall;
 				break;
+			default:
+				wall = Instantiate(wallPrefab[0]) as MazeWall;
+				break;
 		}
 		wall.Initialize(cell, otherCell, direction);
 		if (otherCell != null) {
 			switch(direction){
 				case MazeDirection.North:
-					wall = Instantiate(wallPrefab[0]) as MazeWall;
-					break;
-				case MazeDirection.South:
 					wall = Instantiate(wallPrefab[1]) as MazeWall;
 					break;
+				case MazeDirection.South:
+					wall = Instantiate(wallPrefab[0]) as MazeWall;
+					break;
 				case MazeDirection.East:
-					wall = Instantiate(wallPrefab[2]) as MazeWall;
+					wall = Instantiate(wallPrefab[3]) as MazeWall;
 					break;
 				case MazeDirection.West:
-					wall = Instantiate(wallPrefab[3]) as MazeWall;
+					wall = Instantiate(wallPrefab[2]) as MazeWall;
+					break;
+				default:
+					wall = Instantiate(wallPrefab[0]) as MazeWall;
 					break;
 			}
 			wall.Initialize(otherCell, cell, direction.GetOpposite());
