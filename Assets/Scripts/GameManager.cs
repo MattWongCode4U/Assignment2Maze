@@ -19,14 +19,14 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         StartCoroutine(BeginGame());
-        SetLighting(PlayerPrefs.GetInt("lighting"));
 	}
 	
 	// Update is called once per frame
 	void Update () {
         if (    Input.GetKeyDown(KeyCode.Home) 
             ||  Input.GetKeyDown(KeyCode.JoystickButton7)
-            ||  Input.touchCount > 2) {
+            ||  Input.touchCount > 2
+            ||  Input.GetKey(KeyCode.R)) {
             RespawnPlayer();
             RespawnAI();
         }
@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour {
         GameObject.Find("LoadingImage").SetActive(false);
         SpawnPlayer();
         SpawnAI();
+        SetLighting(PlayerPrefs.GetInt("lighting"));
     }
 
     void SetLighting(int lighting) {
@@ -50,9 +51,14 @@ public class GameManager : MonoBehaviour {
         } else if(lighting == 1) {
             chosenTime = night;
         }
-        _renderers = GetComponentsInChildren<Renderer>();
-        foreach(Renderer renderer in _renderers) {
-            renderer.material.SetFloat("_AmbientLighIntensity", chosenTime);
+        GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
+        foreach(GameObject wall in walls)
+        {
+            _renderers = wall.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in _renderers)
+            {
+                renderer.material.SetFloat("_AmbientLighIntensity", chosenTime);
+            }
         }
     }
 
@@ -83,6 +89,7 @@ public class GameManager : MonoBehaviour {
     void RespawnPlayer() {
         Vector3 spawn = mazeInstance.GetCell(new IntVector2(0, 0)).transform.position;
         playerInstance.transform.position = new Vector3(spawn.x, playerInstance.transform.position.y, spawn.z);
+        playerInstance.ResetView();
     }
 
     void SpawnAI() {

@@ -10,7 +10,8 @@ Welcome to our maze generator game! In this game try to run through the maze as 
 - mouse - look around with the camera
 - `f` - toggle fog effect
 - `` ` `` - toggle noclip
-- `HOME` - respawn
+- `HOME` or `r` - respawn
+
 ## Mac
 - `w` - forward
 - `a` - left
@@ -19,14 +20,18 @@ Welcome to our maze generator game! In this game try to run through the maze as 
 - mouse - look around with the camera
 - `f` - toggle fog effect
 - `` ` `` - toggle noclip
-- `HOME` - respawn
+- `HOME` or `r` - respawn
+
 ## Controller - PC/Mac
 - left joystick - movement (forward, back, left, right)
 - right joystick - look around with the camera
 - `B` Button - toggle fog
 - `Y` Button - toggle noclip
 - `START` Button - respawn
+
 ## Mobile
 - left joystick - movement (forward, back, left, right)
 - right joystick - look around with the camera
-- double tap - respawn
+- three finger tap - respawn
+- fog button - toggle fog
+- noclip butotn - toggle noclip

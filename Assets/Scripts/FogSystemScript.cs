@@ -14,19 +14,24 @@ public class FogSystemScript : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-		if (Input.GetKeyUp(KeyCode.F) || Input.GetKeyDown(KeyCode.JoystickButton1))
-        {
-            fogOn = !fogOn;
+		if (Input.GetKeyUp(KeyCode.F) 
+        ||  Input.GetKeyDown(KeyCode.JoystickButton1)) {
+            ToggleFog();
+        }
+    }
 
-            if (fogOn)
-            {
+    public void ToggleFog() {
+            fogOn = !fogOn;
+            CheckFog();
+    }
+
+    public void CheckFog() {
+            if (fogOn) {
                 GetComponent<ParticleSystem>().Play();
             }
-            else
-            {
+            else {
                 GetComponent<ParticleSystem>().Stop();
                 GetComponent<ParticleSystem>().Clear();
             }
-        }
     }
 }
