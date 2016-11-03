@@ -25,7 +25,8 @@ public class GameManager : MonoBehaviour {
 	void Update () {
         if (    Input.GetKeyDown(KeyCode.Home) 
             ||  Input.GetKeyDown(KeyCode.JoystickButton7)
-            ||  Input.touchCount > 2) {
+            ||  Input.touchCount > 2
+            ||  Input.GetKey(KeyCode.R)) {
             RespawnPlayer();
             RespawnAI();
         }
@@ -50,13 +51,10 @@ public class GameManager : MonoBehaviour {
         } else if(lighting == 1) {
             chosenTime = night;
         }
-        Debug.Log("hello");
-        Debug.Log(GameObject.FindGameObjectsWithTag("Wall"));
         GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
         foreach(GameObject wall in walls)
         {
             _renderers = wall.GetComponentsInChildren<Renderer>();
-            Debug.Log(wall.GetComponentInChildren<Renderer>());
             foreach (Renderer renderer in _renderers)
             {
                 renderer.material.SetFloat("_AmbientLighIntensity", chosenTime);
@@ -91,7 +89,7 @@ public class GameManager : MonoBehaviour {
     void RespawnPlayer() {
         Vector3 spawn = mazeInstance.GetCell(new IntVector2(0, 0)).transform.position;
         playerInstance.transform.position = new Vector3(spawn.x, playerInstance.transform.position.y, spawn.z);
-        playerInstance.transform.rotation = Quaternion.identity;
+        playerInstance.ResetView();
     }
 
     void SpawnAI() {
