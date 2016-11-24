@@ -12,9 +12,12 @@ public class GameManager : MonoBehaviour {
     public AIMovementScript aiPrefab;
     private AIMovementScript aiInstance;
     public Material daySkybox, nightSkybox;
-    private float night = 0.5f;
+    private float night = 0.25f;
     private float day = 1.0f;
     private Renderer[] _renderers;
+    //Audio
+    public AudioClip clip1;
+    public AudioClip clip2;
 
 	// Use this for initialization
 	void Start () {
@@ -29,6 +32,16 @@ public class GameManager : MonoBehaviour {
             ||  Input.GetKey(KeyCode.R)) {
             RespawnPlayer();
             RespawnAI();
+        }
+
+        //Play / Stop the background music on the AI
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (aiInstance.GetComponent<AudioSource>().isPlaying){
+                aiInstance.GetComponent<AudioSource>().Stop();
+            } else {
+                aiInstance.GetComponent<AudioSource>().Play();
+            }
         }
 	}
 
@@ -48,8 +61,14 @@ public class GameManager : MonoBehaviour {
         float chosenTime = 0;
         if(lighting == 0) {
             chosenTime = day;
+            aiInstance.GetComponent<AudioSource>().clip = clip1;
+            Debug.Log("Audio from ai: " + aiInstance.GetComponent<AudioSource>().clip.name);
+            aiInstance.GetComponent<AudioSource>().Play();
         } else if(lighting == 1) {
             chosenTime = night;
+            aiInstance.GetComponent<AudioSource>().clip = clip2;
+            Debug.Log("Audio from ai: " + aiInstance.GetComponent<AudioSource>().clip.name);
+            aiInstance.GetComponent<AudioSource>().Play();
         }
         GameObject[] walls = GameObject.FindGameObjectsWithTag("Wall");
         foreach(GameObject wall in walls)
