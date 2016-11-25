@@ -18,6 +18,7 @@ public class Ball : MonoBehaviour {
 
     void OnCollisionEnter(Collision col) {
         if (col.gameObject.tag == "Enemy") {
+            Debug.Log("Enemy Hit");
             // Add score
             PlayerPrefs.SetInt("playerscore", 
                 PlayerPrefs.GetInt("playerscore") + 1);

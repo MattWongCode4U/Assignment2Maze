@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class GameManager : MonoBehaviour {
     // Maze
@@ -42,6 +45,22 @@ public class GameManager : MonoBehaviour {
             } else {
                 aiInstance.GetComponent<AudioSource>().Play();
             }
+        }
+
+        //Save game state
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            SaveGameState();
+        }
+        //Load game state
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            LoadGameState();
+        }
+        //Delete game state
+        if (Input.GetKeyDown(KeyCode.Comma))
+        {
+            DeleteGameState();
         }
 	}
 
@@ -121,4 +140,71 @@ public class GameManager : MonoBehaviour {
         Vector3 spawn = mazeInstance.GetCell(new IntVector2(mazeInstance.size.x - 1, mazeInstance.size.z - 1)).transform.position;
         aiInstance.transform.position = new Vector3(spawn.x, aiInstance.transform.position.y, spawn.z);
     }
+
+    public void LoadGameState()
+    {
+        if(File.Exists(Application.persistentDataPath + "/gamestate.dat"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream fs = File.Open(Application.persistentDataPath + "/gamestate.dat", FileMode.Open, FileAccess.Read);
+            GameData data = (GameData)bf.Deserialize(fs);
+            fs.Close();
+            playerInstance.transform.position = new Vector3(data.px, data.py, data.pz);
+            aiInstance.transform.position = new Vector3(data.aix, data.aiy, data.aiz);
+            PlayerPrefs.SetInt("playerscore", data.score);
+
+            Debug.Log("Loading State. Score: " + PlayerPrefs.GetInt("playerscore"));
+        } else {
+            Debug.Log("File doesn't exist yet.");
+        }
+    }
+
+    public void SaveGameState()
+    {
+        GameData data = new GameData();
+        data.score = PlayerPrefs.GetInt("playerscore");
+        data.setPlayerPos(playerInstance.transform.position);
+        data.setAIPos(aiInstance.transform.position);
+
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream fs = File.Open(Application.persistentDataPath + "/gamestate.dat", FileMode.OpenOrCreate);
+        bf.Serialize(fs, data);
+        fs.Close();
+
+        Debug.Log("Saving State. Score: " + data.score);
+    }
+
+    public void DeleteGameState()
+    {
+        String filename = Application.persistentDataPath + "/gamestate.dat";
+        if (File.Exists(filename))
+        {
+            File.Delete(filename);
+        } else
+        {
+            Debug.Log("File doesn't exist yet.");
+        }
+    }
 }
+
+[Serializable]
+class GameData
+{
+    public int score;
+    public float px, py, pz;
+    public float aix, aiy, aiz;
+
+    public void setPlayerPos(Vector3 pos)
+    {
+        px = pos.x;
+        py = pos.y;
+        pz = pos.z;
+    }
+
+    public void setAIPos(Vector3 pos)
+    {
+        aix = pos.x;
+        aiy = pos.y;
+        aiz = pos.z;
+    }
+};
