@@ -9,6 +9,10 @@ public class PlayerMovement : MonoBehaviour {
 	public RotationAxes axes = RotationAxes.MouseXAndY;
 	public float sensitivityX = 15F;
 	public float sensitivityY = 15F;
+	public AudioSource walk;
+	public AudioSource wall;
+	public GameObject ball;
+	public Transform ballSpawn;
 	
 	private float minimumX = -360F;
 	private float maximumX = 360F;
@@ -47,6 +51,7 @@ public class PlayerMovement : MonoBehaviour {
         if (joysticks.Length != 0) joystick = true;
 		if (rb) rb.freezeRotation = true;
 		originalRotation = transform.localRotation;
+		PlayerPrefs.SetInt("playerscore", 0);
 	}
 
 	public static float ClampAngle (float angle, float min, float max)
@@ -74,6 +79,9 @@ public class PlayerMovement : MonoBehaviour {
 		|| 	Input.GetKey(KeyCode.Joystick1Button3)) {
 			ToggleNoclip();
 		}
+		if (Input.GetKeyDown (KeyCode.Q)) {
+			throwBall();
+		}
 	}
 
 	void move(float hor, float vert, float multiplier) {
@@ -82,12 +90,15 @@ public class PlayerMovement : MonoBehaviour {
 		Vector3 right = Camera.main.transform.right * (hor * speed * multiplier);
 		right.y = 0f;
 		if (!rb.isKinematic) {
-			//transform.position += forward;
-			//transform.position += right;
 			rb.velocity = forward + right;
 		} else {
 			transform.position += forward;
 			transform.position += right;
+		}
+		if (forward != Vector3.zero || right != Vector3.zero) {
+			walk.Play();
+		} else {
+			walk.Stop();
 		}
 	}
 
@@ -147,5 +158,15 @@ public class PlayerMovement : MonoBehaviour {
 	public void ResetView() {
 		rotationX = 0;
 		rotationY = 0;
+	}
+
+	void OnCollisionEnter(Collision col) {
+		if (col.gameObject.tag == "Wall") {
+			wall.Play();
+		}
+	}
+
+	void throwBall() {
+		Instantiate(ball, ballSpawn.position, ballSpawn.rotation);
 	}
 }
