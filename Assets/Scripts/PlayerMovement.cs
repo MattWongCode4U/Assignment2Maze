@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour {
 	public AudioSource wall;
 	public GameObject ball;
 	public Transform ballSpawn;
+	public GameObject flashlightOBJ;
 	
 	private float minimumX = -360F;
 	private float maximumX = 360F;
@@ -23,6 +24,7 @@ public class PlayerMovement : MonoBehaviour {
 	private float rotationY = 0F;
 	private Quaternion originalRotation;
 	private bool pc, mac, joystick;
+	private bool flashlight = true;
 
 	// Use this for initialization
 	void Start () {
@@ -52,6 +54,8 @@ public class PlayerMovement : MonoBehaviour {
 		if (rb) rb.freezeRotation = true;
 		originalRotation = transform.localRotation;
 		PlayerPrefs.SetInt("playerscore", 0);
+		walk.Stop();
+		wall.Stop();
 	}
 
 	public static float ClampAngle (float angle, float min, float max)
@@ -81,6 +85,9 @@ public class PlayerMovement : MonoBehaviour {
 		}
 		if (Input.GetKeyDown (KeyCode.Q)) {
 			throwBall();
+		}
+		if (Input.GetKeyDown (KeyCode.E)) {
+			toggleFlashlight();
 		}
 	}
 
@@ -168,5 +175,10 @@ public class PlayerMovement : MonoBehaviour {
 
 	void throwBall() {
 		Instantiate(ball, ballSpawn.position, ballSpawn.rotation);
+	}
+
+	void toggleFlashlight() {
+		flashlightOBJ.SetActive(!flashlight);
+		flashlight = !flashlight;
 	}
 }

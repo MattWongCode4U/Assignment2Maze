@@ -83,6 +83,7 @@ public class GameManager : MonoBehaviour {
             aiInstance.GetComponent<AudioSource>().clip = clip1;
             Debug.Log("Audio from ai: " + aiInstance.GetComponent<AudioSource>().clip.name);
             aiInstance.GetComponent<AudioSource>().Play();
+            
         } else if(lighting == 1) {
             chosenTime = night;
             aiInstance.GetComponent<AudioSource>().clip = clip2;
