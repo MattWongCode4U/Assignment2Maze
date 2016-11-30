@@ -12,8 +12,6 @@ public class AIMovementScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         playerobj = GameObject.FindGameObjectWithTag("Player");
-        ohBaby.Stop();
-        mlg.Stop();
 	}
 	
 	// Update is called once per frame

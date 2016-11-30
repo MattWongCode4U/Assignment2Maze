@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour {
     public AudioClip clip1;
     public AudioClip clip2;
 
+    public GameObject dankWall;
+
 	// Use this for initialization
 	void Start () {
         StartCoroutine(BeginGame());
@@ -70,6 +72,7 @@ public class GameManager : MonoBehaviour {
         yield return StartCoroutine(mazeInstance.Generate());
         GameObject.Find("LoadingCamera").SetActive(false);
         GameObject.Find("LoadingImage").SetActive(false);
+        SetupPortal();
         SpawnPlayer();
         SpawnAI();
         SetLighting(PlayerPrefs.GetInt("lighting"));
@@ -185,6 +188,35 @@ public class GameManager : MonoBehaviour {
         {
             Debug.Log("File doesn't exist yet.");
         }
+    }
+
+    void SetupPortal() {
+        //MazeCell c = mazeInstance.GetCell(new IntVector2(0, 0));
+        GameObject cell = GameObject.Find("Maze Cell 0, 0");
+        GameObject[] children = GetChildren(cell);
+        GameObject wall = SearchChildren("Maze Wall South(Clone)", children);
+        Transform kappa = wall.transform.GetChild(wall.transform.childCount - 1).gameObject.transform;
+        Destroy(wall.transform.GetChild(0).gameObject);
+        Instantiate(dankWall, kappa.position, kappa.rotation);
+    }
+
+    GameObject[] GetChildren(GameObject go) {
+        GameObject[] output = new GameObject[go.transform.childCount];
+        for(int i = 0; i < go.transform.childCount; i++) {
+            output[i] = go.transform.GetChild(i).gameObject;
+        }
+        return output;
+    }
+
+    GameObject SearchChildren(String name, GameObject[] children) {
+        GameObject go = null;
+        foreach(GameObject obj in children) {
+            if (obj.name.Equals(name)) {
+                go = obj;
+                return go;
+            }
+        }
+        return null;
     }
 }
 
